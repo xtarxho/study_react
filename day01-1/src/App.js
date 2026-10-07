@@ -21,6 +21,7 @@ function App() {
   );
 }
 
+//컴포넌트라고 부른다
 function Header(props) {
   return (
     <div>
