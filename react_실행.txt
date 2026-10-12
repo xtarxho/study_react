@@ -10,4 +10,7 @@ npm start
 *node_modules 설치
 npm install
 
+*라우터 돔 설치
+npm install react-router-dom
+
 
