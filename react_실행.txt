@@ -1,16 +1,17 @@
-*npm을 10.5.2 버전으로 전역 설치/변경
+* npm을 10.5.2 버전으로 전역 설치/변경
 npm install -g npm@10.5.2 --force
 
-*현재폴더에 리엑트 개발모듈 설치
+* 현재폴더에 리엑트 개발모듈 설치
 npx create-react-app .
 
-*프로젝트 실행
+* 프로젝트 실행
 npm start
 
-*node_modules 설치
+* node_modules 설치
 npm install
 
-*라우터 돔 설치
+* 라우터 돔 설치
 npm install react-router-dom
 
-
+* Axios 설치
+npm install axios

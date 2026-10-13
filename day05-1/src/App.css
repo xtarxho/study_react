@@ -1,0 +1,141 @@
+.movie{
+  display:flex;
+  align-items:center;
+  border:1px solid gray;
+  border-radius:5px;
+  padding:5px;
+  margin-bottom:5px;
+}
+
+.movie-year{
+  font-size: 20px;
+  color:red;
+}
+
+.movie-title{
+  flex-grow:1;
+}
+
+/* 마우스를 올렸을 때 */
+.movie:hover {
+  background-color: #f8faff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 영화 제목 */
+.movie-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 개봉년도 */
+.movie-year {
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #888888;
+}
+
+/* 삭제 버튼 */
+.movie button {
+  padding: 8px 14px;
+
+  color: white;
+  background-color: #e74c3c;
+
+  border: none;
+  border-radius: 6px;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  transition: background-color 0.2s;
+}
+
+/* 삭제 버튼에 마우스를 올렸을 때 */
+.movie button:hover {
+  background-color: #c0392b;
+}
+
+/* 삭제 버튼을 클릭하는 순간 */
+.movie button:active {
+  transform: scale(0.96);
+}
+
+
+/* 영화 등록 폼 */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 20px;
+    margin-bottom: 20px;
+
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 입력창 */
+form input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+
+    font-size: 15px;
+
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 입력창을 클릭했을 때 */
+form input:focus {
+    border-color: #4267d5;
+    box-shadow: 0 0 0 3px rgba(66, 103, 213, 0.12);
+}
+
+/* 입력창 안내 문구 */
+form input::placeholder {
+    color: #aaaaaa;
+}
+
+/* 입력 오류 메시지 */
+form div {
+    min-height: 16px;
+    color: red;
+    font-size: 13px;
+}
+
+/* 영화 추가 버튼 */
+form button {
+    padding: 12px;
+
+    color: white;
+    background-color: #4267d5;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* 버튼에 마우스를 올렸을 때 */
+form button:hover {
+    background-color: #3152b8;
+}
+
+/* 버튼을 클릭했을 때 */
+form button:active {
+    transform: scale(0.98);
+}
