@@ -18,3 +18,10 @@ npm install axios
 
 * 기본 경로
 https://image.tmdb.org/t/p/w1280/
+
+* mysql관련 노드 모듈
+npm install mysql express cors nodemon 또는
+npm install mysql2
+
+* express모듈
+npm install express
