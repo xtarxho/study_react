@@ -1,0 +1,249 @@
+aws 셋팅방법-1(db랑 aws연결)
+
+1. vpc검색 -> vpc 생성
+
+이름 생성-> vpc 생성버튼
+
+2. iam 검색 -> 역할 -> 역할생성버튼
+	-> aws서비스 -> 사용사례 Elastic Beanstalk -Environment
+	->권한추가 스킵 -> 역할이름 입력후 역할생성
+ 역할이름: 
+aws-elasticbeanstalk-service-role
+aws-elasticbeanstalk-instance-profile
+
+ 역할생성 한번더 
+ -> aws서비스 체크 후 사용사례 EC2고른후 EX2로 고름
+ ->권한정책 AWSElasticBeanstalkWebTier 체크
+ -> 이름 설정
+ -> 역할 생성
+
+3. RDS (Aurora and RDS)
+ 데이터베이스로 이동
+ -> 데이터베이스 생성 -> 전체구성
+ -> 엔진 mysql
+-> 데이터베이스 생성방식 선택- 손쉬운 생성
+->에디션 - 프리티어
+-> DB인스턴스 식별자(이름) - react-mysql-database
+-> 마스터 사용자이름 (DBEAVER랑 이름같게) - myuser
+-> 자격증명관리 - 자체관리
+-> 마스터암호 -12345678
+-> 데이터베이스 생성 클릭(10분정도소요)
+-> 해당 DB 선택 클릭 - 수정
+-> DB서브넷 그룹 - default -> default-vpc로 바꿈
+-> 연결-> 추가구성 클릭 - 퍼블릭 엑세스 가능으로 변경
+-> 맨아래 계속 클릭
+-> 수정예약 - 즉시적용확인후 DB인스턴스 수정 클릭
+-> 내가 만든 데이터 클릭
+-> 연결단계에서 2번째꺼에서 mysql -h 뒤쪽 코드 복사(아랫줄 코드임)
+react-mysql-database.czyckmc4w3q6.ap-northeast-2.rds.amazonaws.com
+-> 보안그룹 규칙 - 유형이 EC2가 잡혀있는것을 클릭	
+-> 바뀐 URL에서 해당 보안그룹 체크 후 인바운드규칙 클릭
+-> 인바운드 규칙 편집 클릭 
+-> 규칙추가 클릭 - 새로생긴것에서 유형을 MYSQL/Aurora 클릭
+   소스유형 - 내 IP클릭
+-> 규칙추가 한번더 클릭후
+    유형- MYSQL/Aurora
+    소스- 0.0.0./0 클릭
+-> 규칙저장
+
+
+dbeaver에 연결
+왼쪽 빈곳에 connect 클릭해서 mysql누르고 
+severhost에 react-mysql-database.czyckmc4w3q6.ap-northeast-2.rds.amazonaws.com
+database: mysql
+username: myuser
+password: 12345678
+
+driver properties에 들어가서
+allowpublicKeyRetrieval -> true로 변경
+sslmode -> preffered로 변경
+useSSL -> false로 변경
+
+생성된 database 우클릭후 연결 입력하고
+파란색 체크가 걸리면 aws에 rds가 연결이 되어있는 상태이다
+
+sql편집기- 새 sql 편집기 클릭
+create database mydb 실행
+use mydb 실행
+create table login(
+	id int auto_increment primary key,
+	name varchar(30),
+	email varchar(100),
+	password varchar(100)
+); 실행
+
+
+aws 셋팅방법-2(이제 react랑 db를 연결)
+
+
+
+1. server.js에서
+//DB연결정보 등록
+const db = mysql.createConnection({
+    host:"react-mysql-database.czyckmc4w3q6.ap-northeast-2.rds.amazonaws.com",
+    user:"myuser", 
+    password:'12345678', 
+    database:'mydb' 
+})
+
+db.connect((err)=> {
+    if(err){
+        console.log("DB연결 실패")
+    }else{
+        console.log("DB연결 성공")
+    }
+})
+
+이렇게 수정
+여기서 host랑 password만 수정한거
+
+//aws 서버측에서 사용할 경로
+const path = require("path");
+
+app.use( express.static( path.join(__dirname, "build") ) );
+
+app.get('*', ( req, res )=>{
+    res.sendFile( path.join(__dirname, "build", "index.html") );
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log("연결중...")
+})
+server.js 마지막 부분에 작성
+
+2. 프론트, 백엔드 서버 다 끄고
+  프론트에 npm run build 입력
+-> 제대로 깔렸는지 확인법 : front 폴더안에 build 폴더있는지 확인
+
+3. build 폴더를 백엔드에도 복사해서 넣기
+백엔드 서버 실행해보고
+혹시 npmstart가 안되면
+npm uninstall express
+
+express버전이 문제엿던거라 바꾸면됌
+npm install express@4
+
+4. front서버 키고 한번 실행
+5. 회원가입을 확인해보고 dbeaver에서 확인해보고 되면 연결이 잘된것이다.
+
+6. 혹시 바뀐 설정들이 있다면 서버를 닫고
+   npm run build를해서 build를 한번 초기화해주고 back,front에 다 배포
+
+7. backend 폴더에서 node-module을 제외한것들 압축하고
+8. aws에 들어가서 AWS Elastic Beanstalk 검색
+9. 애플리케이션 배포 클릭
+10. 애플리케이션 이름 설정(임의로) : React-aws-demo
+     플랫폼 -Node.js로 변경
+     애플리케이션코드 - 로컬파일로 변경 후 파일선택에 
+				방금 압축한 zip파일을 넣는다
+11. 버전레이블을 반드시 입력해놔야한다
+      내용이 변경될때마다 압축파일을 올릴때마다 버전이 같으면 안되기  
+      때문에
+12. 서비스 액세스 클릭해서 활성화를 시킨다
+	서비스역할에서
+      -> customize 입력 use existingrole 클릭
+      -> aws-elasticbeanstalk-service-role을 클릭
+
+13.  EC2 인스턴스 프로파일 에서
+	-> customize 입력 use existingrole 클릭
+      -> aws-elasticbeanstalk-instace-profile을 클릭
+
+14.  네크워킹- 선택사항 활성화
+
+15.  vpc를 defualt 에서 아까 설정한
+      vpc-starcho로 변경
+16. 인스턴스 서브넷은 public으로 잡혀잇는것만 체크한뒤
+    생성을 클릭 (시간이 몇분정도 소요)
+17. 도메인이 생성되면 hosting이 완료된것(내가 만든 주소가이것)
+- http://react-aws-demo-env.eba-fg2srimj.ap-southeast-2.elasticbeanstalk.com/ 
+
+18. 코드를 바꾸고 다시 배포하려면
+ Elastic Beanstalk 에서 애플리케이션에서 해당 애플리케이션 누르면
+애플리케이션 버전이 나온다. 그걸 누르면 버전 레이블이 나오는데
+거기서 새로 생성해서 새로운 버전을 생성한다
+새로운 버전에 새로운 zip파일을 올리고 생성한뒤
+작업에서 배포를 누르면 환경을 고르고 확인을 누르면
+배포된다.
+그 뒤에 환경을 누르고 해당 환경을 클릭한뒤 새로고침하면 버전이 바뀌어잇어야 제대로 배포된것이다.
+
+19. 현재 새로운버전의 도메인
+React-aws-demo-env.eba-fg2srimj.ap-southeast-2.elasticbeanstalk.com 
+
+20. 도메인의 무료도메인 배포사이트
+-> 내 도메인 한국 
+ -> 일반 도메인 검색 - react-csm 을 한뒤 마음에 드는거 하나 고른다
+-> react-csm.p-e.kr 등록하기 누름
+-> 보안카드하고 나면 내 도메인 등록이라는게 뜬다.
+-> 현재 상태에서 창을끄지말고 다른창의 ec2로 일단다시 돌아간다.
+-> ec2의 인스턴스로 들어가서 퍼블릭 IPv4 를 복사해서 내도메인한국으로 돌아가서
+-> 고급설정(DNS)의 IP연결 체크한뒤 api라고 입력하고 옆 빈칸에는
+    54.252.45.21(자기 ip주소)를 넣어서 한줄을 완성한뒤 수정
+-> 이제 내 url은 http://api.react-csm.p-e.kr
+
+
+----------------------------------------------------------------------
+삭제하는 순서
+RDS -> iam -> elastic beanstalk -> ec2인스턴스 -> vpc까지 지워져야 돈이 안나간다. 돈은 RDS만 지워져도 부담이 많이적어진다.
+--------------------------------------------------------------------
+
+삭제하는 방법(순서가 중요하다)
+
+*팁: 내 도메인 한국에서 쓰는것중 안쓰는것들은 지워놓는게 좋다.
+
+1. AWS에서 RDS 검색
+2. 데이터베이스메뉴 클릭
+3. 지울 데이터 클릭 
+4. 작업메뉴 클릭한뒤 삭제를 클릭
+5. 삭제를 하려면 맨 밑에  delete me 입력하라는것을 입력한뒤 삭제클릭
+6. 삭제하는데 시간이 조금 걸리기도하고 다 안지워지면 iam이 안지워진다.
+
+7. IAM들어가서 역할을 들어간다
+8. 내가 넣엇던 임의로 만들엇던것 기억해서 지워야한다
+    aws-elasticbeanstalk-instance-profile
+    aws-elasticbeanstalk-service-role  
+    등등 삭제 활성화되는놈들은 다 지운다
+
+9. elastic beanstalk를 들어간다
+10. 애플리케이션 탭에 들어가서 해당 애플리케이션 체크한뒤 작업을 
+     눌러서 애플리케이션 삭제를 누른다
+
+
+11. ec2를 들어간다 
+12. 인스턴스 탭으로 들어간다.
+13. 오늘 테스트한거를 체크한뒤 인스턴스상태를 클릭한뒤 인스턴스 강	제종료(삭제) 클릭한다.
+	안지워지면 한번더 작업에서 종료(삭제)를 누른다.
+
+14. vpc 입력한뒤 좌측에 vpc메뉴로 한번더 들어간뒤
+    기본으로 만들어진것이 아니라 내가 만들엇더것을 클릭한뒤
+    vpc 삭제를 누른다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -12,24 +12,26 @@ function Login() {
         password: ''
     })
 
-    const [errors, setErrors] = useState()
-
+    // const [errors, setErrors] = useState()
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setErrors(LoginValidation(values));
+        // setErrors(LoginValidation(values));
 
-        if(!errors){
+        const bError = LoginValidation(values);
+
+        if (!bError) {
             return;
         }
 
-        axios.post('http://localhost:3000/login', values)
+        axios.post('/login', values)
             .then(res => {
 
-                if(res.data.result === "success"){
+                if (res.data.result === "success") {
                     alert("로그인 성공")
-                    navi('/main_content', {state:{name:res.data.name}})
-                }else{
+                    navi('/main_content', { state: { name: res.data.name, 
+                                                    email:res.data.email } })
+                } else {
                     alert("아이디나 비밀번호를 확인하세요")
                 }
 

@@ -13,17 +13,19 @@ function Signup() {
         password: ''
     })
 
-    const [errors, setErrors] = useState()
+    // const [errors, setErrors] = useState()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        setErrors(Signupvali(values))
+        // setErrors(Signupvali(values))
 
-        if(!errors){
+        const bError = Signupvali(values);
+
+        if (!bError) {
             return;
         }
 
-        axios.post('http://localhost:3000/signup', values)
+        axios.post('/signup', values)
             .then(res => {
                 alert("가입성공");
                 navi('/')

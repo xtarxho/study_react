@@ -25,3 +25,9 @@ npm install mysql2
 
 * express모듈
 npm install express
+
+*express모듈 4버전 설치
+npm install express@4
+
+* express모듈 제거
+npm uninstall express
