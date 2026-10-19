@@ -1,0 +1,70 @@
+vision ai
+
+1. 구글 클라우드
+2. 좌상단에  구글 클라우드 옆에 프로젝트명쪽 클릭 ->
+   프로젝트 생성 -> 만들기
+3. 원하는 프로젝트 클릭
+4. 좌상단에 설정 들어가서
+   API및 서비스 클릭 -> 라이브러리 클릭
+5. vision ai 검색 -> vion ai api 클릭 -> 사용 활성화
+    -> 뒤로가기 두번 -> cloud document ai api 클릭-> 사용활성화
+6. 좌상단 메뉴 클릭 -> IAM 및 관리자 -> 서비:스 계정 -> 서비스 계정만들기
+  - > 계정이름: vison-shop/ 서비스 계정설명 : 리엑트에서 vision ai 호출해보기
+  - > 만들고 닫기 클릭
+  - > 옆에 숫자 떠잇는 우상단 알림이라는걸 클릭
+  - > cmd 창이 뜨는데
+   gcloud config get-value project 
+   입력하면 아까 만든서비스명이 밑에 나온다.
+  - > api 사용을 위한 인증단계
+       gcloud auth application-default login
+  -> continue(Y/N)? 이걸 Y로 입력  
+  -> URL경로 나오는걸 클릭해라
+  -> 다 입력하고  COPY 클릭하고 CMD에 붙혀넣기해라
+  -> 그 이후 Y입력
+---------------------------------------------------------------------
+cmd창에서 뜨는 프로젝트명?? 노란색 괄호안에 있는걸 가지고있어라
+ project-4e730b00-2b04-40a8-9a6<<- 노랑괄호안에 있는 내 프로젝트 명이다
+
+6. 애플리케이션 인증정보 저장 & 등록
+  gcloud auth application-default set-quota-project project-4e730b00-2b04-40a8-9a6
+
+7. cloud vision api 활성화
+gcloud services enable vision.googleapis.com
+
+8. 더보기 버튼 누르고 업로드 아이콘 선택 후 파일 선택 후 원하는 이미지 업로드
+
+9. 구글 cmd 창에 작성 (project명은 자기꺼 작성)
+curl -X POST \
+  -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+  -H "x-goog-user-project: project-4e730b00-2b04-40a8-9a6" \
+  -H "Content-Type: application/json; charset=utf-8" \
+  https://vision.googleapis.com/v1/images:annotate \
+  -d "{
+    \"requests\": [
+      {
+        \"image\": {
+          \"content\": \"$(base64 -w 0 images.jpg)\"
+        },
+        \"features\": [
+          {
+            \"type\": \"LABEL_DETECTION\"
+          }
+        ]
+      }
+    ]
+  }"
+
+10. 메뉴 클릭 -> api 및 서비스 클릭 -> 사용자 인증 정보 클릭 -> 사용자 인증 정보 만들기 클릭 -> api 키 클릭 -> api 제한사항 선택에서 vision 검색 후 cloud vision api랑 vision ai api 선택 후 확인 누르기 -> 애플리케이션 제한사항 없음으로 한 상태에서 만들기 누르기
+
+생성된 api 키 (리액트로 가져가야함)
+AIzaSyAQIovw3dVtuUXxrSRZpdlS60a0NweDMMk
+
+
+
+
+
+
+
+
+
+

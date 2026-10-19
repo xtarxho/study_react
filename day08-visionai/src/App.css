@@ -1,0 +1,171 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+/* Header */
+
+header {
+  height: 70px;
+  padding: 0 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+nav {
+  display: flex;
+  gap: 30px;
+}
+
+nav span {
+  cursor: pointer;
+}
+
+/* Main */
+
+main {
+  width: 1000px;
+  margin: 70px auto;
+}
+
+/* Upload */
+
+.upload-container {
+  text-align: center;
+}
+
+.upload-container h2 {
+  font-size: 32px;
+  margin-bottom: 15px;
+}
+
+.upload-container>p {
+  color: #777;
+  line-height: 1.7;
+}
+
+.upload-box {
+  width: 600px;
+  min-height: 350px;
+
+  margin: 40px auto;
+
+  background-color: white;
+  border: 2px dashed #ccc;
+  border-radius: 15px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-image {
+  width: 300px;
+  height: 220px;
+
+  object-fit: contain;
+
+  margin-bottom: 20px;
+}
+
+/* Button */
+
+.upload-button {
+  display: inline-block;
+
+  padding: 12px 25px;
+
+  background-color: #222;
+  color: white;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.upload-button input {
+  display: none;
+}
+
+.analyze-button {
+  margin-top: 15px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  background-color: #333;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.analyze-button:hover {
+  background-color: #555;
+}
+
+.analyze-message {
+  margin-top: 15px;
+  color: #555;
+}
+
+.result-container {
+  width: 600px;
+  margin: 50px auto;
+
+  padding: 30px;
+
+  background-color: white;
+  border-radius: 15px;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.result-container h2 {
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 20px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item span {
+  color: #777;
+}
+
+.result-item strong {
+  color: #222;
+}
+
+.result-item ul {
+  margin: 0;
+  padding-left: 20px;
+}

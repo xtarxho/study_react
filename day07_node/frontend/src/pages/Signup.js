@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Signupvali from "../commons/SignupVali";
-import axios from 'axios';
+// 회원가입 입력값 관리, 입력 이벤트 처리, 유효성 검사, 
+// 서버에 데이터 전송, 페이지 이동이 들어있는 페이지
 
+import React, { useState } from "react"; //react와 useState 불러오기
+import { Link, useNavigate } from "react-router-dom"; // 페이지 이동을 위한 Link와 useNavigation 불러오기
+import Signupvali from "../commons/SignupVali"; //유효성 검사를 위한 컴포넌트 불러오기
+import axios from 'axios'; //서버에 http 요청을 보내기 위한 axios 불러오기
+
+//회원가입 컴포넌트 정의
 function Signup() {
 
-    const navi = useNavigate()
+    const navi = useNavigate() //원하는 주소로 이동할 수 있는 함수
 
+    //회원 정보 담아주는 역할을 한다
     const [values, setValues] = useState({
         name: '',
         email: '',
