@@ -20,16 +20,21 @@ function Signup() {
 
     // const [errors, setErrors] = useState()
 
+    //회원가입 실행할 함수를 정의한다
     const handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault() //페이지의 새로고침을 막아주는 역할을 한다
         // setErrors(Signupvali(values))
 
+        //입력값을 검사하고 결과를 bError에 저장한다
         const bError = Signupvali(values);
 
+        //거짓이면 서버 요청을 실행하지 않는다
         if (!bError) {
             return;
         }
 
+        //signup 주소로 values값을 전송하고 성공하면 .then을 실행한다
+        //가입 성공을 화면에 띄우고 로그인 페이지로 이동한다.
         axios.post('/signup', values)
             .then(res => {
                 alert("가입성공");
@@ -37,6 +42,7 @@ function Signup() {
             })
     }
 
+    //회원가입에 성공한 정보를 ...values에 저장한다.
     const handleInput = (e) => {
         setValues({
             ...values,
@@ -46,10 +52,12 @@ function Signup() {
 
     return (
         <div>
-            <h2>회원가입</h2>
+            <h2>회원가입</h2> {/* 회원가입 제목 표시 */}
 
+            {/* 가입완료 버튼을 누르면 handleSubmit 실행 */}
             <form onSubmit={handleSubmit}>
-                <div className="name">
+                {/* 이름, 이메일, 비밀번호를 정확하게 입력하고 가입완료를 누르면 각각 values. 에 저장된다 */}
+                <div className="name"> 
                     <label>이름</label>
                     <input placeholder="enter name"
                         onChange={handleInput}
@@ -71,6 +79,7 @@ function Signup() {
 
                 <button type="submit">가입완료</button>
 
+                {/* 계정이 있을 경우 로그인 페이지로 이동시켜준다 */}
                 <p>계정이 있으신가요?</p>
                 <Link to='/'>로그인</Link>
 

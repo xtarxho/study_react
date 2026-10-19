@@ -17,6 +17,7 @@ const db = mysql.createConnection({
     database: 'mydb'
 })
 
+//데이터베이스에 연결을 시도하고 연결 성공 여부를 알려주는 코드이다
 db.connect((err)=> {
     if(err){
         console.log("DB연결 실패")
