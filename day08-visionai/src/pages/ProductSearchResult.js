@@ -1,79 +1,85 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import products from "../data/product";
 
 function ProductSearchResult({result}){
 
-    const searchKeyword = [
-        result.type,
-        ...result.features
-    ].join(" ")
+    const[products, setProducts] = useState([])
+    const [loading,setLoading] = useState(false)
+    const [error, setError] = useState("")
 
-    console.log("검색어 : " + searchKeyword)
+    //result에 변경이 있을때만 useEffect가 사용
+    useEffect(()=>{
+        const searchProducts = async () => {
 
-    //상품을 여러개로 수정
-    const product = [
-        {
-            brand: "Nike",
-            name: "Nike Air Force 1",
-            price: 89000,
-            description: "깔끔한 화이트 컬러의 대표적인 스니커즈입니다.",
-            keywords: ["운동화", "흰색", "스포츠화", "스니커즈"]
-        },
-        {
-            brand: "Adidas",
-            name: "Adidas Superstar",
-            price: 79000,
-            description: "클래식한 디자인의 화이트 스니커즈입니다.",
-            keywords: ["운동화", "흰색", "스니커즈"]
-        },
-        {
-            brand: "New Balance",
-            name: "New Balance 530",
-            price: 119000,
-            description: "편안한 착화감이 특징인 인기 러닝화입니다.",
-            keywords: ["운동화", "회색", "스포츠화", "러닝화"]
-        },
-        {
-            brand: "Converse",
-            name: "Chuck Taylor All Star",
-            price: 69000,
-            description: "캐주얼하게 활용하기 좋은 클래식 스니커즈입니다.",
-            keywords: ["운동화", "흰색", "스니커즈", "캐주얼"]
-        }
-    ];
+            setLoading(true);
+            setError("");
 
-    //map을 통해서 product배열에 담긴 내용을 하나씩 꺼내옴
-    const matchProducts = product.map(product => {
-        //"운동화 흰색 스포츠화 스니커즈"와 같은 형식의 키워드를 가진 항목이 있는지
-        //조회해서 일치하는 항목의 갯수를 .length로 구한다
-        const score = product.keywords.filter(keyboard => 
-            searchKeyword.includes(keyboard)
-        ).length;
+            const searchKeywords = [
+                result.type,
+                ...result.features,
+                result.text,
+                result.keyword
+            ];
 
-        return{
-            ...product,
-            score:score
-        }
+            const searchKeyword = searchKeywords.join(" ");
 
-    })
+            console.log("상품 검색어:", searchKeyword);
 
-    //임시로 매칭결과를 조회
-    matchProducts.forEach(product => {
-        console.log(
-            product.brand,
-            product.name,
-            "score :" + product.score
+            try {
+      
+                const response = await fetch(
+                    `https://real-time-product-search.p.rapidapi.com/search?q=${encodeURIComponent(searchKeyword)}&limit=40&page=1&country=us&language=en&sort_by=BEST_MATCH&product_condition=ANY&return_filters=true`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-rapidapi-host": "real-time-product-search.p.rapidapi.com",
+                            "x-rapidapi-key": process.env.REACT_APP_RAPIDAPI_KEY
+                        }
+                    }
+                );
+            
+                const data = await response.json();
+            
+                console.log("RapidAPI 상품 검색 결과:", data);
+            
+                setProducts(data.data.products || []);
+            
+            } catch (error) {
+                console.error("상품 검색 오류:", error);
+                setError("상품 검색 중 오류가 발생했습니다.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        searchProducts();
+    }, {result})
+
+    //일치하는 상품이 없는 경우
+    if(products.length === 0){
+        return(
+            <div className="product-search-result">
+                <h2>상품 검색 결과</h2>
+                <p>일치하는 상품을 찾을 수 없습니다</p>
+            </div>
         )
-    })
+    }
 
     return(
         <div className="product-search-result">
             <h2>상품 검색 결과</h2>
-            <div className="product-info">
-                <p>브랜드 : {product.brand}</p>
-                <p>상품명 : {product.name}</p>
-                <p>예상가격 : {product.price}</p>
-                <p>상품설명 : {product.description}</p>
-            </div>
+            
+            {
+                products.slice(0, 5).map((product)=>(
+                    <div className="product-info" key={product.product_id}>
+                        <img src={product.product_photos} width="200"/>
+                        <p>상품명 : {product.product_title}</p>
+                        <p>가격 : {product.price}</p>
+                    </div>
+                ))
+            }
+
         </div>
     )
 }

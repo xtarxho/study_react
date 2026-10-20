@@ -5,6 +5,7 @@ function ImageUpload({ setIsAnalyzed, setResult }) {
     const [image, setImage] = useState(null)
     const [status, setStatus] = useState('')
     const [file, setFile] = useState(null)
+    const [keyword, setKeyword] = useState("")
 
     const changeImage = (e) => {
         const file = e.target.files[0]
@@ -43,18 +44,18 @@ function ImageUpload({ setIsAnalyzed, setResult }) {
         });
     };
 
-    const TEST_MODE = true;
+    const TEST_MODE = false;
 
     //이미지 분석 감시자
     //async -> 대기하라는 키워드
     const analyzeImage = async () => {
 
-        if(TEST_MODE){
+        if (TEST_MODE) {
 
             const result = {
-                type:"운동화",
-                features:["흰색", "스포츠화", "스니커즈"],
-                similarity:98
+                type: "운동화",
+                features: ["흰색", "스포츠화", "스니커즈"],
+                similarity: 98
             }
 
             setResult(result);
@@ -90,10 +91,15 @@ function ImageUpload({ setIsAnalyzed, setResult }) {
                         //자바스크립트 객체를 JSON구조로 바꿔주는 함수 -> stringify()
                         requests: [{
                             image: { content: base64Image },
-                            features: [{
-                                type: "LABEL_DETECTION",
-                                maxResults: 10
-                            }]
+                            features: [
+                                {
+                                    type: "LABEL_DETECTION",
+                                    maxResults: 10
+                                },
+                                {
+                                    type: "TEXT_DETECTION",
+                                    maxResults: 10
+                                }]
                         }]
                     })
                 }
@@ -104,14 +110,20 @@ function ImageUpload({ setIsAnalyzed, setResult }) {
 
             console.log("api 호출 결과 : ", data)
 
+            //인식된 텍스트가 있다면...
+            const text = data.responses?.[0]?.textAnnotations?.[0]?.description || []
+            console.log("인식된 글자 : ", text)
+
             //가져온 목록들 중 [0]번 index의 값을 labels에 저장하되
             //가져올 결과가 없는 경우 빈 배열([])로 저장하라는 뜻이다
             const labels = data.responses?.[0]?.labelAnnotations || []
 
             const result = {
-                type:labels[0]?.description || '알 수 없음', 
-                features:labels.slice(1, 4).map(label => label.description),
-                similarity:labels[0] ? Math.round(labels[0].score * 100) : 0
+                type: labels[0]?.description || '알 수 없음',
+                features: labels.slice(1, 4).map(label => label.description),
+                text: text,
+                keyword: keyword,
+                similarity: labels[0] ? Math.round(labels[0].score * 100) : 0
             }
 
             setResult(result)
@@ -143,6 +155,11 @@ function ImageUpload({ setIsAnalyzed, setResult }) {
                         <p>상품 이미지를 선택해주세요</p>
                     </span>
                 )}
+
+                <input type="text"
+                    placeholder="추가 검색어를 입력"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)} />
 
                 <label className="upload-button">
                     이미지 선택
