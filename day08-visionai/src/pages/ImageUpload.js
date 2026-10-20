@@ -81,7 +81,7 @@ function ImageUpload({ setIsAnalyzed, setResult }) {
             //2. vision api 호출
             //fetch와 axios의 차이 알아보기
             const response = await fetch(
-                "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAQIovw3dVtuUXxrSRZpdlS60a0NweDMMk",
+                "https://vision.googleapis.com/v1/images:annotate?key=내 api 주소 작성",
                 {
                     method: "POST",
                     headers: {
