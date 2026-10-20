@@ -56,8 +56,7 @@ curl -X POST \
 
 10. 메뉴 클릭 -> api 및 서비스 클릭 -> 사용자 인증 정보 클릭 -> 사용자 인증 정보 만들기 클릭 -> api 키 클릭 -> api 제한사항 선택에서 vision 검색 후 cloud vision api랑 vision ai api 선택 후 확인 누르기 -> 애플리케이션 제한사항 없음으로 한 상태에서 만들기 누르기
 
-생성된 api 키 (리액트로 가져가야함)
-AIzaSyAQIovw3dVtuUXxrSRZpdlS60a0NweDMMk
+생성된 api 키 (리액트로 가져가야함) -> 카톡에 있음
 
 
 
